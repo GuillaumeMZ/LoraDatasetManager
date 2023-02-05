@@ -4,7 +4,10 @@ from urllib.request import Request, urlopen
 from pathlib import Path
 
 def dl_from_danbooru_link(url, output_dir, dl_captions=False):
-    pass
+    # Extract ID from the url
+    id = url.split("/")[-1]
+
+    return dl_from_danbooru_id(id, output_dir, dl_captions=dl_captions)
 
 def dl_from_danbooru_id(id, output_dir, custom_name=None, dl_captions=False):
     number_regex = re.compile(r"\d+")

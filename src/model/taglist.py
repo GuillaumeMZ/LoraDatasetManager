@@ -13,4 +13,4 @@ class Taglist:
 
     def remove_tags(self, tags):
         for tag in tags:
-            self.tags.remove(tag)        
+            self.tags.remove(tag)

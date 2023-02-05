@@ -1,4 +1,5 @@
 from pathlib import Path
+from PIL import Image
 
 class Dataset:
     def __init__(self, dataset_path):
@@ -8,6 +9,14 @@ class Dataset:
             raise Exception("Dataset path does not exist or is not a directory")
 
         self._load_dataset()
+
+    def reload(self):
+        self._load_dataset()
+
+    def save(self):
+        for image, tags in self.dataset.items():
+            file_name = self.dataset_path.joinpath(f"{image.filename}.txt")
+            file_name.write_text(",".join(tags))
 
     def _load_tags(file_name):
         file_path = Path(file_name).with_suffix(".txt")
@@ -19,5 +28,5 @@ class Dataset:
 
     def _load_dataset(self):
         self.dataset = {
-            file_name: Dataset._load_tags(file_name) for file_name in self.dataset_path.iterdir() if file_name.is_file() and file_name.suffix in [".png", ".jpg", ".jpeg", ".webp"]
+            Image.open(file_name): Dataset._load_tags(file_name) for file_name in self.dataset_path.iterdir() if file_name.is_file() and file_name.suffix in [".png", ".jpg", ".jpeg", ".webp"]
         }

@@ -14,6 +14,7 @@ TODO
 * Clone this repository: `git clone https://github.com/GuillaumeMZ/LoraDatasetManager.git`
 * Navigate to the repository: `cd LoraDatasetManager`
 * Create a virtual environment: `python3 -m venv venv`
+* Switch to the virtual environment: `source venv/bin/activate` (Linux/macOS) or `.\venv\Scripts\activate` (Windows)
 * Install the requirements: `pip install -r requirements.txt`
 * Run the application: `python3 app.py`
 
