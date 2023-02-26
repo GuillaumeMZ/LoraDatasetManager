@@ -1,32 +1,64 @@
 from pathlib import Path
-from PIL import Image
+import re
+
+
+class InvalidDatasetError(Exception):
+    def __init__(self, cause):
+        super().__init__(cause)
+
 
 class Dataset:
-    def __init__(self, dataset_path):
+    def __init__(self, dataset_path: str):
         self.dataset_path = Path(dataset_path)
-        
-        if not self.dataset_path.exists() or not self.dataset_path.is_dir():
-            raise Exception("Dataset path does not exist or is not a directory")
+        self.concepts = []
+        self.images = []
 
         self._load_dataset()
-
-    def reload(self):
-        self._load_dataset()
-
-    def save(self):
-        for image, tags in self.dataset.items():
-            file_name = self.dataset_path.joinpath(f"{image.filename}.txt")
-            file_name.write_text(",".join(tags))
-
-    def _load_tags(file_name):
-        file_path = Path(file_name).with_suffix(".txt")
-
-        if not file_path.exists() or not file_path.is_file():
-            return None
-
-        return [tag.strip() for tag in file_path.read_text().split(",")]
 
     def _load_dataset(self):
-        self.dataset = {
-            Image.open(file_name): Dataset._load_tags(file_name) for file_name in self.dataset_path.iterdir() if file_name.is_file() and file_name.suffix in [".png", ".jpg", ".jpeg", ".webp"]
-        }
+        # First, check that dataset_path exists and is a folder
+        if (not self.dataset_path.exists()) or (not self.dataset_path.is_dir()):
+            raise InvalidDatasetError(f"The specified path ({self.dataset_path}) is not a directory or does not exist.")
+
+        # For each subdirectory which corresponds to a concept, load it
+        for element in self.dataset_path.iterdir():
+            if (not element.is_dir()) or (not Dataset._is_concept_name(element.name)):
+                continue
+
+            self._load_concept(element)
+
+    def _load_concept(self, concept_path):
+        # First of all, register the concept name
+        self.concepts.append(concept_path.name)
+
+        # We will load all images files with their extension being one of the following: .png, .jpg, .jpeg, .webp
+        for element in concept_path.iterdir():
+            if (not element.is_file()) or (element.suffix in [".png", ".jpeg", ".jpg", ".webp"]):
+                continue
+
+            self._load_image(element, concept_path.name)
+
+    def _load_image(self, image_path: Path, concept_name: str):
+        image_stem = image_path.stem
+
+        # let's check if the image comes with a tag file
+        tag_file_path = image_path.parent / f"{image_stem}.txt"
+
+        image_description = None
+
+        # if the image is tagged, we read the tags
+        if tag_file_path.exists():
+            with tag_file_path.open() as f:
+                image_description = f.read()
+
+        # register the image
+        self.images.append({
+
+        })
+
+    @staticmethod
+    def _is_concept_name(name: str):
+        """A valid concept name has the form X_Y where X is a number and Y is some text."""
+        concept_name_regex = re.compile(r"\d+_[a-zA-Z0-9]+")
+
+        return concept_name_regex.match(name) is not None # Maybe not the best way to check this
