@@ -17,3 +17,6 @@ class App(ctk.CTkToplevel):
 
         self._download_button = ctk.CTkButton(self, text="Add image")
         self._download_button.grid(row=1, column=0, sticky="swe", padx=10, pady=10)
+
+        self._concept_selector = ctk.CTkComboBox(self, values=["a", "c", "b"])
+        self._concept_selector.grid(row=2, column=0, sticky="swe", padx=10, pady=10)

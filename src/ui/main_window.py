@@ -1,5 +1,6 @@
 import customtkinter as ctk
-from .dataset_viewer import DatasetViewer
+from dataset_viewer import DatasetViewer
+
 
 class App(ctk.CTk):
     def __init__(self):

@@ -15,6 +15,11 @@ class Dataset:
 
         self._load_dataset()
 
+    def reload(self):
+        # Save, then load again
+        # TODO: write the save method
+        self._load_dataset()  #
+
     def _load_dataset(self):
         # First, check that dataset_path exists and is a folder
         if (not self.dataset_path.exists()) or (not self.dataset_path.is_dir()):
@@ -33,7 +38,7 @@ class Dataset:
 
         # We will load all images files with their extension being one of the following: .png, .jpg, .jpeg, .webp
         for element in concept_path.iterdir():
-            if (not element.is_file()) or (element.suffix in [".png", ".jpeg", ".jpg", ".webp"]):
+            if (not element.is_file()) or (element.suffix not in [".png", ".jpeg", ".jpg", ".webp"]):
                 continue
 
             self._load_image(element, concept_path.name)
@@ -53,12 +58,15 @@ class Dataset:
 
         # register the image
         self.images.append({
-
+            "image_path": image_path,
+            "image_name": image_stem,  # No extension
+            "tags": image_description,
+            "concept_name": concept_name  # Is it really useful ?
         })
 
     @staticmethod
     def _is_concept_name(name: str):
-        """A valid concept name has the form X_Y where X is a number and Y is some text."""
+        # A valid concept name has the form X_Y where X is a number and Y is some text.
         concept_name_regex = re.compile(r"\d+_[a-zA-Z0-9]+")
 
-        return concept_name_regex.match(name) is not None # Maybe not the best way to check this
+        return concept_name_regex.match(name) is not None  # Maybe not the best way to check this ?
