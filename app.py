@@ -1,7 +1,12 @@
-import customtkinter as ctk
-from src.ui.download_image import App
+import sys
+
+from PySide6.QtGui import QGuiApplication
+from PySide6.QtQml import QQmlApplicationEngine
 
 
-if __name__ == "__main__":
-    app = App(None)
-    app.mainloop()
+app = QGuiApplication(sys.argv)
+
+engine = QQmlApplicationEngine()
+engine.load('src/ui/main_window.qml')
+
+sys.exit(app.exec())

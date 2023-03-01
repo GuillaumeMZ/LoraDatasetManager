@@ -1,4 +1,5 @@
 from pathlib import Path
+from PIL import Image
 import re
 
 
@@ -60,6 +61,7 @@ class Dataset:
         self.images.append({
             "image_path": image_path,
             "image_name": image_stem,  # No extension
+            "image_object": Image.open(image_path),
             "tags": image_description,
             "concept_name": concept_name  # Is it really useful ?
         })
