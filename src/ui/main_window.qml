@@ -12,5 +12,4 @@ ApplicationWindow {
         text: "Hello World"
         font.pixelSize: 24
     }
-
 }
