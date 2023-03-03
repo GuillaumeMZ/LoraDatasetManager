@@ -1,6 +1,8 @@
+from dataclasses import dataclass
 from pathlib import Path
 from PIL import Image
 import re
+from src.model.taglist import Taglist
 
 
 class InvalidDatasetError(Exception):
@@ -8,18 +10,37 @@ class InvalidDatasetError(Exception):
         super().__init__(cause)
 
 
+@dataclass
+class DatasetImage:
+    path: Path
+    name: str
+    pil_image: Image
+    tags: Taglist
+    concept_name: str
+
+
 class Dataset:
     def __init__(self, dataset_path: str):
         self.dataset_path = Path(dataset_path)
         self.concepts = []
-        self.images = []
+        self.images: list[DatasetImage] = []
 
         self._load_dataset()
 
-    def reload(self):
-        # Save, then load again
-        # TODO: write the save method
-        self._load_dataset()  #
+    def reload(self, save_before_reload: bool):
+        if save_before_reload:
+            self.save()
+
+        self._load_dataset()
+
+    def save(self):
+        for image in self.images:
+            if image.tags is None:
+                continue
+
+            file_path = Path(image.path.parent / f"{image.name}.txt")
+            with file_path.open("w+") as output:
+                output.write(image.tags.as_row_string())
 
     def _load_dataset(self):
         # First, check that dataset_path exists and is a folder
@@ -55,16 +76,16 @@ class Dataset:
         # if the image is tagged, we read the tags
         if tag_file_path.exists():
             with tag_file_path.open() as f:
-                image_description = f.read()
+                image_description = Taglist(f.read())
 
         # register the image
-        self.images.append({
-            "image_path": image_path,
-            "image_name": image_stem,  # No extension
-            "image_object": Image.open(image_path),
-            "tags": image_description,
-            "concept_name": concept_name  # Is it really useful ?
-        })
+        self.images.append(DatasetImage(
+            path=image_path,
+            name=image_stem,
+            pil_image=Image.open(image_path),
+            tags=image_description,
+            concept_name=concept_name
+        ))
 
     @staticmethod
     def _is_concept_name(name: str):

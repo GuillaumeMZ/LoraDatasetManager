@@ -11,7 +11,7 @@ class Taglist:
 
     def add_tag(self, tag: str, position: int = -1):
         """
-        Add a tag to the tag list.
+        Add a tag to the tag list. By default, adds it at the end.
         :param tag: the tag to add
         :param position: the position where the tag should be
         added. Starts at 0; -1 corresponds to the end of the taglist, -2 corresponds to the element before the last,
@@ -25,6 +25,10 @@ class Taglist:
 
         self._tags.insert(position, tag)
 
+    def add_tags(self, tags: list[str]):  # What about the positions ?
+        for tag in tags:
+            self.add_tag(tag)
+
     def remove_tag(self, tag: str):
         """
         Removes the tag if it is present in the taglist; does nothing otherwise
@@ -34,3 +38,10 @@ class Taglist:
             self._tags.remove(tag)
         except ValueError:
             pass
+
+    def remove_tags(self, tags: list[str]):
+        for tag in tags:
+            self.remove_tag(tag)
+
+    def as_row_string(self) -> str:
+        return ", ".join(self._tags)
