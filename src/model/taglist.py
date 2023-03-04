@@ -43,5 +43,5 @@ class Taglist:
         for tag in tags:
             self.remove_tag(tag)
 
-    def as_row_string(self) -> str:
+    def __str__(self) -> str:
         return ", ".join(self._tags)

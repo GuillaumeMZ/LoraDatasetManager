@@ -21,17 +21,13 @@ class DatasetImage:
 
 class Dataset:
     def __init__(self, dataset_path: str):
-        self.dataset_path = Path(dataset_path)
-        self.concepts = []
-        self.images: list[DatasetImage] = []
+        self._load_dataset(dataset_path)
 
-        self._load_dataset()
-
-    def reload(self, save_before_reload: bool):
+    def reload(self, save_before_reload: bool = False):
         if save_before_reload:
             self.save()
 
-        self._load_dataset()
+        self._load_dataset(str(self.dataset_path))
 
     def save(self):
         for image in self.images:
@@ -40,9 +36,13 @@ class Dataset:
 
             file_path = Path(image.path.parent / f"{image.name}.txt")
             with file_path.open("w+") as output:
-                output.write(image.tags.as_row_string())
+                output.write(str(image.tags))
 
-    def _load_dataset(self):
+    def _load_dataset(self, dataset_path: str):
+        self.dataset_path = Path(dataset_path)
+        self.concepts = []
+        self.images: list[DatasetImage] = []
+
         # First, check that dataset_path exists and is a folder
         if (not self.dataset_path.exists()) or (not self.dataset_path.is_dir()):
             raise InvalidDatasetError(f"The specified path ({self.dataset_path}) is not a directory or does not exist.")
