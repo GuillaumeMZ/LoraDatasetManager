@@ -1,4 +1,3 @@
 pyside6
 pillow
-pyopencl # optional, but recommended
-SSIM-PIL
+imagehash

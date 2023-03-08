@@ -3,13 +3,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from PIL import Image
 import re
-from SSIM_PIL import compare_ssim
+
+from src.model.dataset_image import DatasetImage
 from src.model.taglist import Taglist
-
-
-class InvalidDatasetError(Exception):
-    def __init__(self, cause):
-        super().__init__(cause)
 
 
 class DatasetConfig:
@@ -24,32 +20,10 @@ class DatasetConfig:
         self.tags_groups = self._json["tags_groups"]
 
 
-@dataclass
-class DatasetImage:
-    """
-    Do not create instances of this class directly.
-    """
-    path: Path
-    name: str
-    pil_image: Image
-    tags: Taglist
-    concept_name: str
 
 
 def are_images_identical(first: Image, second: Image) -> bool:
-    EQUALITY_THRESHOLD = 0.8
 
-    if first.size != second.size:
-        # We need to resize one of the images, as compare_ssim yields an exception if the images don't have the same size
-        # We are resizing it with Image.ANTIALIAS, as described here: https://stackoverflow.com/a/14407830
-        first = first\
-            .resize(second.size, Image.ANTIALIAS)\
-            .convert('RGBA')  # Can be RGB or even P, we need the images to have the same color mode
-
-    try:
-        result = compare_ssim(first, second) >= EQUALITY_THRESHOLD
-    except Exception as e:
-        print(f"Exception {e} occured while comparing {first} and {second}.")
 
 
 def is_concept_name(name: str):
@@ -59,8 +33,9 @@ def is_concept_name(name: str):
 
 
 class Dataset:
-    def __init__(self, dataset_path: str):
-        self._load_dataset(dataset_path)
+    def __init__(self, concepts: list[str], images: list[DatasetImage]):
+        self.concepts = concepts
+        self.images = images
 
     def reload(self, save_before_reload: bool = False):
         if save_before_reload:
@@ -77,22 +52,7 @@ class Dataset:
             with file_path.open("w+") as output:
                 output.write(str(image.tags))
 
-    def _load_dataset(self, dataset_path: str):
-        self.dataset_path = Path(dataset_path)
-        self.concepts = []
-        self.images: list[DatasetImage] = []
-        self.duplicates: list[DatasetImage] = []
 
-        # First, check that dataset_path exists and is a folder
-        if (not self.dataset_path.exists()) or (not self.dataset_path.is_dir()):
-            raise InvalidDatasetError(f"The specified path ({self.dataset_path}) is not a directory or does not exist.")
-
-        # For each subdirectory which corresponds to a concept, load it
-        for element in self.dataset_path.iterdir():
-            if (not element.is_dir()) or (not is_concept_name(element.name)):
-                continue
-
-            self._load_concept(element)
 
     def _load_concept(self, concept_path):
         # First of all, register the concept name
