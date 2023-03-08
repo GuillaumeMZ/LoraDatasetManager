@@ -54,16 +54,7 @@ class Dataset:
 
 
 
-    def _load_concept(self, concept_path):
-        # First of all, register the concept name
-        self.concepts.append(concept_path.name)
 
-        # We will load all images files with their extension being one of the following: .png, .jpg, .jpeg, .webp
-        for element in concept_path.iterdir():
-            if (not element.is_file()) or (element.suffix not in [".png", ".jpeg", ".jpg", ".webp"]):
-                continue
-
-            self._load_image(element, concept_path.name)
 
     def _find_duplicates(self, image: Image) -> DatasetImage | None:
         for existing in self.images:

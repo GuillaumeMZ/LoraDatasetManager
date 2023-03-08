@@ -26,7 +26,19 @@ class DatasetLoader:
 
         self.dataset = ...
 
-IMAGE_COMPARISON_EQUALITY_THRESHOLD = 5
+    def _load_concepts(self):
+        # For each subdirectory which corresponds to a concept, load it
+        for element in self.dataset_path.iterdir():
+            if (not element.is_dir()) or (not is_concept_name(element.name)):
+                continue
+
+            self._load_concept(element)
+
+
+    def _load_concept(self):
+
+
+        IMAGE_COMPARISON_EQUALITY_THRESHOLD = 5
 
 def _find_duplicated_images(images: list[DatasetImage]):
     duplicated_images: list[DatasetImage] = []
@@ -63,9 +75,4 @@ def _find_duplicated_images(images: list[DatasetImage]):
         if (not self.dataset_path.exists()) or (not self.dataset_path.is_dir()):
             raise InvalidDatasetError(f"The specified path ({self.dataset_path}) is not a directory or does not exist.")
 
-        # For each subdirectory which corresponds to a concept, load it
-        for element in self.dataset_path.iterdir():
-            if (not element.is_dir()) or (not is_concept_name(element.name)):
-                continue
 
-            self._load_concept(element)
