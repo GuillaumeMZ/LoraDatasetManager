@@ -2,12 +2,13 @@ class Taglist:
     """
     An ordered set of tags, without any duplicates.
     """
-    def __init__(self, raw_content: str):
+    def __init__(self, raw_content: str, separator=','):
         """
         Creates a Taglist from a string containing tags separated by commas. For instance, the string "a, b, c" yields
         the dataset ["a", "b", "c"].
         """
-        self._tags = list(map(lambda tag: tag.strip(), raw_content.split(",")))
+        self.separator = separator
+        self._tags = list(map(lambda tag: tag.strip(), raw_content.split(separator)))
 
     def add_tag(self, tag: str, position: int = -1):
         """
@@ -44,4 +45,4 @@ class Taglist:
             self.remove_tag(tag)
 
     def __str__(self) -> str:
-        return ", ".join(self._tags)
+        return f"{self.separator} ".join(self._tags)

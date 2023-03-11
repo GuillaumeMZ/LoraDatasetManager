@@ -12,7 +12,7 @@ class DatasetImage:
     """
     path: Path
     name: str
-    pil_image: Image
-    tags: Taglist
     concept_name: str
-    cached_hash: ImageHash
+    pil_image: Image # Inside ctor
+    tags: Taglist # Inside ctor
+    cached_hash: ImageHash # Inside ctor
