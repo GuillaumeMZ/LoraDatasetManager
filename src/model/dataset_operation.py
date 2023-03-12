@@ -1,17 +1,28 @@
 from src.model.dataset import Dataset
+from typing import Protocol
+
 from src.model.dataset_image import DatasetImage
-from typing import Callable
+
+
+class DatasetOperationFilter(Protocol):
+    def filter(self, image: DatasetImage) -> bool:
+        """Tells if an operation will be applied to this image or not."""
+
+
+class DatasetOperationApplication(Protocol):
+    def apply(self, image: DatasetImage) -> None:
+        """This method is called on all the matched images."""
 
 
 class DatasetOperation:
     def __init__(self,
-                 image_filter: Callable[[DatasetImage], bool],
-                 operation: Callable[[DatasetImage], None]
+                 image_filter: DatasetOperationFilter,
+                 application
                  ):
         self.image_filter = image_filter
-        self.operation = operation
+        self.application = application
 
     def apply(self, dataset: Dataset):
         for image in dataset.images:
-            if self.image_filter(image):
-                self.operation(image)
+            if self.image_filter.filter(image):
+                self.application.apply(image)
