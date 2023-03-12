@@ -11,7 +11,10 @@ class Dataset:
         self.concepts = concepts
 
         self.images: list[DatasetImage] = []
-        self.duplicated_images: list[DatasetImage] = []
+
+        # Used to store the duplicated images. The first element of the tuple is the duplicated image itself,
+        # the second is the image it is a duplicate of.
+        self.duplicated_images: list[tuple[DatasetImage, DatasetImage]] = []
 
         # Add and dedup the images
         for image in images:
@@ -24,8 +27,17 @@ class Dataset:
     _EQUALITY_DISTANCE_THRESHOLD = 10
 
     def add_image(self, image_to_add: DatasetImage):
-        if any(image.cached_hash - image_to_add.cached_hash <= Dataset._EQUALITY_DISTANCE_THRESHOLD
-               for image in self.images):
-            self.duplicated_images.append(image_to_add)
+        found = False
+        dupe_source = None
+
+        for image in self.images:
+            if image_to_add.cached_hash - image.cached_hash <= Dataset._EQUALITY_DISTANCE_THRESHOLD:
+                # The images are (nearly) the same
+                found = True
+                dupe_source = image
+                break
+
+        if found:
+            self.duplicated_images.append((image_to_add, dupe_source))
         else:
             self.images.append(image_to_add)

@@ -50,6 +50,8 @@ class DatasetLoader:
                   for image in cpt.path.iterdir()
                   if image.is_file() and image.suffix in Dataset.ALLOWED_IMAGE_FORMATS]
 
+        # This takes ~97% of the loading execution time
+        # TODO: parallelize this
         for image in images:
             self._load_image(image[0], image[1])
 

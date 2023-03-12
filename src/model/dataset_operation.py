@@ -15,4 +15,3 @@ class DatasetOperation:
         for image in dataset.images:
             if self.image_filter(image):
                 self.operation(image)
-
