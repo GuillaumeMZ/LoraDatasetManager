@@ -12,10 +12,10 @@ class Concept:
     iterations: int
     path: Path
 
-
-def parse_concept_name(source: str) -> tuple[int, str] | None:
-    parse_result = _CONCEPT_NAME_REGEX.fullmatch(source)
-    if parse_result is None:
-        return None
-    else:
-        return int(parse_result.group(1)), parse_result.group(2)
+    @staticmethod
+    def parse_concept_name(source: str) -> tuple[int, str] | None:
+        parse_result = _CONCEPT_NAME_REGEX.fullmatch(source)
+        if parse_result is None:
+            return None
+        else:
+            return int(parse_result.group(1)), parse_result.group(2)

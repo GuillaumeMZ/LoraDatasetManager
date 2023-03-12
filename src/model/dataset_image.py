@@ -1,18 +1,14 @@
-from imagehash import ImageHash
-from dataclasses import dataclass
+from imagehash import phash
 from pathlib import Path
 from PIL import Image
-from taglist import Taglist
+from src.model.taglist import Taglist
 
 
-@dataclass
 class DatasetImage:
-    """
-    Do not create instances of this class directly.
-    """
-    path: Path
-    name: str
-    concept_name: str
-    pil_image: Image # Inside ctor
-    tags: Taglist # Inside ctor
-    cached_hash: ImageHash # Inside ctor
+    def __init__(self, path: Path, concept_name: str, tags: Taglist | None):
+        self.path = path
+        self.name = path.name
+        self.concept_name = concept_name
+        self.pil_image = Image.open(path)
+        self.cached_hash = phash(self.pil_image)
+        self.tags = tags

@@ -8,7 +8,7 @@ TODO
 * Python 3.10.6 or higher
 * Git
 * (Optional) [Kohya's LoRA trainer](https://github.com/kohya-ss/sd-scripts)
-* (Optional) WaifuDiffusion 1.4 tagger
+* (Optional) One of the WaifuDiffusion 1.4 v2 taggers (SwinIR being the most accurate while ViT being the fastest)
 
 ## How to install
 * Clone this repository: `git clone https://github.com/GuillaumeMZ/LoraDatasetManager.git`

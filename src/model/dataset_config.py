@@ -1,3 +1,7 @@
+import json
+from pathlib import Path
+
+
 class DatasetConfig:
     def __init__(self, config_file: Path):
         self._load_config(config_file)

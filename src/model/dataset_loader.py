@@ -1,9 +1,8 @@
-from dataclasses import dataclass
-from dataset_image import DatasetImage
 from pathlib import Path
-from imagehash import average_hash
-import concept
-from PIL import Image
+from src.model.dataset import Dataset
+from src.model.dataset_image import DatasetImage
+from src.model.concept import Concept
+from src.model.taglist import Taglist
 
 
 class InvalidDatasetError(Exception):
@@ -13,18 +12,17 @@ class InvalidDatasetError(Exception):
 
 class DatasetLoader:
     """
-    Loads a dataset in memory.
-    Use members dataset_path, concepts, images and config when creating a Dataset.
+    Used to load a dataset from the filesystem.
+    Use the load method to get a Dataset instance.
     """
     def __init__(self, dataset_path: Path):
         self.dataset_path = dataset_path
+        self.concepts: list[Concept] = []
+        self.images: list[DatasetImage] = []
+        self.unused_items: list[Path] = []
 
-        # Check dataset's structure validity
         self._check_dataset_structure_validity()
-
         self._register_concepts()
-
-        # Load the images and filter duplicates.
         self._load_images()
 
     def _check_dataset_structure_validity(self):
@@ -32,49 +30,48 @@ class DatasetLoader:
             raise InvalidDatasetError(f"The given path ({self.dataset_path}) must be an existing directory.")
 
     def _register_concepts(self):
-        self.concepts: list[concept.Concept] = []
-
         for item in self.dataset_path.iterdir():
             if not item.is_dir():
                 continue
 
-            parsed_concept_name = concept.parse_concept_name(item.name)
+            parsed_concept_name = Concept.parse_concept_name(item.name)
 
             if parsed_concept_name is None:
-                continue
+                self.unused_items.append(item)
 
-            self.concepts.append(concept.Concept(
+            self.concepts.append(Concept(
                 iterations=parsed_concept_name[0],
                 name=parsed_concept_name[1],
                 path=item
             ))
 
-    # Recognized image formats by Kohya's sd-scripts
-    _ALLOWED_IMAGE_FORMATS = ['.png', '.jpg', '.jpeg', '.webp']
-
     def _load_images(self):
         images = [(image, cpt.name) for cpt in self.concepts
                   for image in cpt.path.iterdir()
-                  if (not image.is_file()) or (image.suffix not in DatasetLoader._ALLOWED_IMAGE_FORMATS)]
-
-        images = list(map(lambda image: DatasetImage(
-            path=image[0],
-            name=image[0].name,
-            concept_name=image[1]
-        ), images))
-
-        self._dedup_images(images)
-
-    # Two images' hashes having a hamming distance less or equal to this threshold are considered to be identical
-    _EQUALITY_DISTANCE_THRESHOLD = 10
-
-    def _dedup_images(self, images: list[DatasetImage]):
-        self.images: list[DatasetImage] = []
-        self.duplicated_images: list[DatasetImage] = []
+                  if image.is_file() and image.suffix in Dataset.ALLOWED_IMAGE_FORMATS]
 
         for image in images:
-            if any(image.cached_hash - loaded_image.cached_hash <= DatasetLoader._EQUALITY_DISTANCE_THRESHOLD
-                   for loaded_image in self.images):
-                self.duplicated_images.append(image)
-            else:
-                self.images.append(image)
+            self._load_image(image[0], image[1])
+
+    def _load_image(self, path: Path, concept_name: str):  # Won't be used by the downloader I think
+        """
+        Load the requested image and its tags, if present.
+        """
+        tag_file_path = path.parent / f"{path.stem}.txt"
+
+        if not tag_file_path.exists():
+            tags = None
+        else:
+            with tag_file_path.open() as file:
+                tags = Taglist(file.read())
+
+        self.images.append(
+            DatasetImage(
+                path,
+                concept_name,
+                tags
+            )
+        )
+
+    def load(self):
+        return Dataset(self.dataset_path, None, self.concepts, self.images)  # TODO: load config
