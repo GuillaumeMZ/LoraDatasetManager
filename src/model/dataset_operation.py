@@ -76,6 +76,9 @@ class AddTagsApplication(DatasetOperationApplication):
         self.position = position
 
     def apply(self, image: DatasetImage) -> None:
+        if image.tags is None:  # TODO factorise this ?
+            return
+
         if isinstance(self.tags, str):
             image.tags.add_tag(self.tags, self.position)
         else:
@@ -90,6 +93,9 @@ class RemoveTagsApplication(DatasetOperationApplication):
         self.tags = tags
 
     def apply(self, image: DatasetImage) -> None:
+        if image.tags is None:  # TODO factorise this ?
+            return
+
         if isinstance(self.tags, str):
             image.tags.remove_tag(self.tags)
         else:
