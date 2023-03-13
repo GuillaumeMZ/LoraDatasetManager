@@ -27,7 +27,12 @@ class Taglist:
         self._tags.insert(position, tag)
 
     def add_tags(self, tags: 'Taglist', position: int = -1):  # tags: Self since python 3.11
-        for tag in reversed(tags._tags):
+        if position >= 0:
+            tags = reversed(tags._tags)
+        else:
+            tags = tags._tags
+
+        for tag in tags:
             self.add_tag(tag, position)
 
     def remove_tag(self, tag: str):
