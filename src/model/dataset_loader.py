@@ -59,7 +59,7 @@ class DatasetLoader:
         """
         Load the requested image and its tags, if present.
         """
-        tag_file_path = path.parent / f"{path.stem}.txt"
+        tag_file_path = path.parent / f"{path.stem}.txt"  # TODO: try with path.with_suffix(".txt")
 
         if not tag_file_path.exists():
             tags = None
