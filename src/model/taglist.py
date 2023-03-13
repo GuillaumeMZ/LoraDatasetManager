@@ -26,9 +26,9 @@ class Taglist:
 
         self._tags.insert(position, tag)
 
-    def add_tags(self, tags: list[str]):  # What about the positions ?
-        for tag in tags:
-            self.add_tag(tag)
+    def add_tags(self, tags: 'Taglist', position: int = -1):  # tags: Self since python 3.11
+        for tag in reversed(tags._tags):
+            self.add_tag(tag, position)
 
     def remove_tag(self, tag: str):
         """
@@ -40,8 +40,8 @@ class Taglist:
         except ValueError:
             pass
 
-    def remove_tags(self, tags: list[str]):
-        for tag in tags:
+    def remove_tags(self, tags: 'Taglist'):  # tags: Self since python 3.11
+        for tag in tags._tags:
             self.remove_tag(tag)
 
     def __str__(self) -> str:
