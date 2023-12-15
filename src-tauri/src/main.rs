@@ -1,13 +1,18 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use std::path::PathBuf;
+
+mod dataset;
+use dataset::Dataset;
+
 #[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello from Rust, {} !", name)
+fn load_dataset(dataset_path: PathBuf) -> Dataset {
+    Dataset::from_path(dataset_path)
 }
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet])
+        .invoke_handler(tauri::generate_handler![load_dataset])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

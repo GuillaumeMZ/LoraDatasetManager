@@ -1,6 +1,5 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
-
 import PrimeVue from "primevue/config";
 import 'primevue/resources/themes/lara-dark-green/theme.css';
 
