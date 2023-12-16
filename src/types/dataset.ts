@@ -1,7 +1,7 @@
 export type Dataset = {
     name: string,
     path: string,
-    items: [DatasetItem]
+    items: DatasetItem[]
 };
 
 export type DatasetItem =
