@@ -4,7 +4,8 @@
     import Button from 'primevue/button';
 
     import { useDatasetStore } from "../stores/datasetStore";
-    import router from '../router';
+    import router from "../router";
+    import { Dataset } from "../types/dataset";    
 
     const store = useDatasetStore();
 
@@ -20,9 +21,7 @@
         }
 
         // this should be refactored into a separated function when other dataset opening methods will be added
-        //TODO: Dataset interface (remove any)
-        const dataset: any = await invoke('load_dataset', { datasetPath: selectedDatasetPath });
-        console.log(dataset);
+        const dataset: Dataset = await invoke('load_dataset', { datasetPath: selectedDatasetPath });
         store.$state = dataset;
         
         router.push("/datasetEditor");
