@@ -1,6 +1,9 @@
 use std::vec::Vec;
 
-//Could this be converted into a tuple-struct ?
+use serde::{Serialize, Deserialize};
+
+//Should this be converted into a tuple-struct ?
+#[derive(Serialize, Deserialize)]
 pub struct Taglist {
     tags: Vec<String>
 }
