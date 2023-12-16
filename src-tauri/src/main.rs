@@ -1,8 +1,9 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod dataset;
+
 use std::path::PathBuf;
 
-mod dataset;
 use dataset::Dataset;
 
 #[tauri::command]

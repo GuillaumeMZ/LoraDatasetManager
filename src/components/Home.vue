@@ -20,13 +20,10 @@
         }
 
         // this should be refactored into a separated function when other dataset opening methods will be added
-        //TODO: Dataset interface
-        const dataset: { name: string, path: string } = await invoke('load_dataset', { datasetPath: selectedDatasetPath });
+        //TODO: Dataset interface (remove any)
+        const dataset: any = await invoke('load_dataset', { datasetPath: selectedDatasetPath });
         console.log(dataset);
         store.$state = dataset;
-        
-        // change window title
-
         
         router.push("/datasetEditor");
     };
