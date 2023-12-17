@@ -3,7 +3,7 @@ import { createRouter, createWebHashHistory } from "vue-router";
 
 import { useDatasetStore } from "./stores/datasetStore";
 import Home from "./components/Home.vue";
-import DatasetEditor from "./components/DatasetEditor.vue";
+import DatasetEditor from "./pages/DatasetEditor.vue";
 
 const routes = [
     { 

@@ -4,12 +4,18 @@ export type Dataset = {
     items: DatasetItem[]
 };
 
+export type Directory     = { Directory: string };
+export type UnknownFile   = { UnknownFile: string };
+export type UntaggedImage = { UntaggedImage: string };
+export type OrphanedTags  = { OrphanedTags: string };
+export type ValidItem     = { ValidItem: [string, string, TaggedImage] };
+
 export type DatasetItem =
-      { Directory: string }
-    | { UnknownFile: string }
-    | { UntaggedImage: string }
-    | { OrphanedTags: string }
-    | { ValidItem: [string, string, TaggedImage] }
+      Directory
+    | UnknownFile
+    | UntaggedImage
+    | OrphanedTags
+    | ValidItem
 ;
 
 export type TaggedImage = any;
