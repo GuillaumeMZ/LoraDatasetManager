@@ -73,6 +73,10 @@ const images = computed(() => {
         object-fit: contain;
     }
 
+    button {
+        z-index: 1;
+    }
+
     .p-galleria-thumbnail-wrapper {
         width: 100%;
         height: 100px;
