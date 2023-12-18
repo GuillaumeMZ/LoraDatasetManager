@@ -4,18 +4,43 @@ export type Dataset = {
     items: DatasetItem[]
 };
 
-export type Directory     = { Directory: string };
-export type UnknownFile   = { UnknownFile: string };
-export type UntaggedImage = { UntaggedImage: string };
-export type OrphanedTags  = { OrphanedTags: string };
-export type ValidItem     = { ValidItem: [string, string, TaggedImage] };
-
 export type DatasetItem =
-      Directory
-    | UnknownFile
-    | UntaggedImage
-    | OrphanedTags
-    | ValidItem
+      DirectoryItemType
+    | UnknownFileItemType
+    | UntaggedImageItemType
+    | OrphanedTagsItemType
+    | ParentedTagsItemType
+    | TaggedImageItemType
 ;
 
-export type TaggedImage = any;
+export type DirectoryItemType = { 
+    name: string,
+    itemType: "directory" 
+};
+
+export type UnknownFileItemType = { 
+    name: string,
+    itemType: "unknownFile"
+};
+
+export type UntaggedImageItemType = { 
+    name: string,
+    itemType: "untaggedImage"
+};
+
+export type OrphanedTagsItemType = { 
+    name: string,
+    itemType: "orphanedTags"
+};
+
+export type ParentedTagsItemType = { 
+    name: string,
+    itemType: "parentedTags"
+};
+
+export type TaggedImageItemType = { 
+    name: string,
+    itemType: "taggedImage",
+    path: string,
+    tags: string[]
+};

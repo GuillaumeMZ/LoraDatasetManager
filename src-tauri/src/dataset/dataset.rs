@@ -3,25 +3,36 @@ use std::fs::read_dir;
 use std::path::PathBuf;
 use std::vec::Vec;
 
-use serde::{Serialize, Deserialize};
+use serde::Serialize;
 
-use super::TaggedImage;
+use super::{Taglist, item_type_serializer::serialize_dataset_item_type};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Dataset {
     name: String,
     path: PathBuf,
     items: Vec<DatasetItem> 
 }
 
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DatasetItem {
+    name: String,
+    #[serde(flatten, serialize_with = "serialize_dataset_item_type")]
+    item_type: DatasetItemType
+}
+
 //TODO: Conflicts are not taken into account.
-#[derive(Serialize, Deserialize)]
-pub enum DatasetItem {
-    Directory(PathBuf),
-    UnknownFile(PathBuf),
-    UntaggedImage(PathBuf),
-    OrphanedTags(PathBuf),
-    ValidItem(PathBuf, PathBuf, TaggedImage) //.0: image, .1: tags
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub enum DatasetItemType {
+    Directory,
+    UnknownFile,
+    UntaggedImage,
+    OrphanedTags, //what about UnattachedTags ?
+    ParentedTags, //what about AttachedTags ? should this have its image's name ?
+    TaggedImage(PathBuf, Taglist)
 }
 
 impl Dataset {
@@ -36,13 +47,14 @@ impl Dataset {
 
 const RECOGNIZED_IMAGE_FORMATS: [&str; 5] = ["jpg", "jpeg", "png", "bmp", "webp"];
 
-//This is clearly not clean at all. TODO: clean this !!!
+// This is clearly not clean at all. TODO: clean this !!!
 fn load_items_from_path(path: &PathBuf) -> Vec<DatasetItem> {
     let all_files: HashSet<PathBuf> = read_dir(&path)
                                             .unwrap()
                                             .map(Result::unwrap)
                                             .map(|x| x.path())
                                             .collect();
+
 
     let image_files: HashSet<&PathBuf>  = all_files
                                             .iter()
@@ -57,10 +69,11 @@ fn load_items_from_path(path: &PathBuf) -> Vec<DatasetItem> {
         let image_tags_file = image_file.with_extension("txt");
 
         if image_tags_file.exists() {
-            result.push(DatasetItem::ValidItem(image_file.clone(), image_tags_file.clone(), TaggedImage {})); //TODO: fill the TaggedImage
+            result.push(DatasetItem {name: option_osstr_to_string(image_file.file_name()), item_type: DatasetItemType::TaggedImage(image_file.clone(), Taglist::new())}); //TODO: fill the Taglist
+            result.push(DatasetItem {name: option_osstr_to_string(image_tags_file.file_name()), item_type: DatasetItemType::ParentedTags});
             known_files.insert(image_tags_file.clone());
         } else {
-            result.push(DatasetItem::UntaggedImage(image_file.clone()));
+            result.push(DatasetItem {name: option_osstr_to_string(image_file.file_name()), item_type: DatasetItemType::UntaggedImage});
         }
         
         known_files.insert(image_file.clone());
@@ -69,11 +82,11 @@ fn load_items_from_path(path: &PathBuf) -> Vec<DatasetItem> {
     let remaining_files: HashSet<&PathBuf> = all_files.difference(&known_files).collect();
     for file in remaining_files {
         if file.is_dir() {
-            result.push(DatasetItem::Directory(file.clone()));
+            result.push(DatasetItem {name: option_osstr_to_string(file.file_name()), item_type: DatasetItemType::Directory});
         } else if file.extension().is_some() && option_osstr_to_string(file.extension()) == "txt" {
-            result.push(DatasetItem::OrphanedTags(file.clone()));
+            result.push(DatasetItem {name: option_osstr_to_string(file.file_name()), item_type: DatasetItemType::OrphanedTags});
         } else {
-            result.push(DatasetItem::UnknownFile(file.clone()));
+            result.push(DatasetItem {name: option_osstr_to_string(file.file_name()), item_type: DatasetItemType::UnknownFile});
         }
     }
 

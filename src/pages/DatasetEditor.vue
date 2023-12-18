@@ -9,20 +9,19 @@
     import { useDatasetStore } from "../stores/datasetStore";
 
     import { convertFileSrc } from "@tauri-apps/api/tauri";
-    import { ValidItem } from "../types/dataset";
+    import { TaggedImageItemType } from "../types/dataset";
 
     const sidebarVisible = ref(false); 
 
     const store = useDatasetStore();
 
     const images = computed(() => {
-        const validItems = store.datasetItems.filter(item => "ValidItem" in item) as ValidItem[];
-    
-        return validItems.map(item => ({
-            itemImageSrc: convertFileSrc(item.ValidItem[0]),
-            thumbnailImageSrc: convertFileSrc(item.ValidItem[0]),
-            alt: "test",
-            title: "test"
+        const taggedImages: TaggedImageItemType[]  = store.datasetItems.filter(item => item.itemType === "taggedImage") as TaggedImageItemType[];
+        return taggedImages.map(item => ({
+            itemImageSrc: convertFileSrc(item.path),
+            thumbnailImageSrc: convertFileSrc(item.path),
+            alt: item.name,
+            title: item.name
         }));
     });
 </script>
