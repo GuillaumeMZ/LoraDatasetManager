@@ -70,7 +70,7 @@ fn load_items_from_path(path: &PathBuf) -> Vec<DatasetItem> {
     for file in remaining_files {
         if file.is_dir() {
             result.push(DatasetItem::Directory(file.clone()));
-        } else if option_osstr_to_string(file.extension()) == "txt" {
+        } else if file.extension().is_some() && option_osstr_to_string(file.extension()) == "txt" {
             result.push(DatasetItem::OrphanedTags(file.clone()));
         } else {
             result.push(DatasetItem::UnknownFile(file.clone()));
