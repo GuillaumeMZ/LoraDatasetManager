@@ -34,7 +34,7 @@
         </Sidebar>
         <DatasetGalleria v-if="images.length !== 0" :images="images"/>
         <div id="no-images" v-else>
-            <p>It looks like there is no image in the dataset you selected... 😔</p>
+            <p>It looks like there is no image in the dataset you have selected... 😔</p>
             <router-link to="/">Go back to the main menu</router-link>
         </div>
     </div>
