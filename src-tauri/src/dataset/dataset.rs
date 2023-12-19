@@ -29,10 +29,8 @@ pub struct DatasetItem {
 pub enum DatasetItemType {
     Directory,
     UnknownFile,
-    UntaggedImage,
-    OrphanedTags, //what about UnattachedTags ?
-    ParentedTags, //what about AttachedTags ? should this have its image's name ?
-    TaggedImage(PathBuf, Taglist)
+    Tags(Taglist, Option<String>), //what about UnattachedTags ?
+    Image(PathBuf, Option<String>)
 }
 
 impl Dataset {
@@ -69,11 +67,11 @@ fn load_items_from_path(path: &PathBuf) -> Vec<DatasetItem> {
         let image_tags_file = image_file.with_extension("txt");
 
         if image_tags_file.exists() {
-            result.push(DatasetItem {name: option_osstr_to_string(image_file.file_name()), item_type: DatasetItemType::TaggedImage(image_file.clone(), Taglist::new())}); //TODO: fill the Taglist
-            result.push(DatasetItem {name: option_osstr_to_string(image_tags_file.file_name()), item_type: DatasetItemType::ParentedTags});
+            result.push(DatasetItem {name: option_osstr_to_string(image_file.file_name()), item_type: DatasetItemType::Image(image_file.clone(), image_tags_file.file_name().map(osstr_to_string))});
+            result.push(DatasetItem {name: option_osstr_to_string(image_tags_file.file_name()), item_type: DatasetItemType::Tags(Taglist::new(), image_file.file_name().map(osstr_to_string))}); //TODO: fill the tags
             known_files.insert(image_tags_file.clone());
         } else {
-            result.push(DatasetItem {name: option_osstr_to_string(image_file.file_name()), item_type: DatasetItemType::UntaggedImage});
+            result.push(DatasetItem {name: option_osstr_to_string(image_file.file_name()), item_type: DatasetItemType::Image(image_file.clone(), None)});
         }
         
         known_files.insert(image_file.clone());
@@ -84,7 +82,7 @@ fn load_items_from_path(path: &PathBuf) -> Vec<DatasetItem> {
         if file.is_dir() {
             result.push(DatasetItem {name: option_osstr_to_string(file.file_name()), item_type: DatasetItemType::Directory});
         } else if file.extension().is_some() && option_osstr_to_string(file.extension()) == "txt" {
-            result.push(DatasetItem {name: option_osstr_to_string(file.file_name()), item_type: DatasetItemType::OrphanedTags});
+            result.push(DatasetItem {name: option_osstr_to_string(file.file_name()), item_type: DatasetItemType::Tags(Taglist::new(), None)}); //TODO: fill the tags
         } else {
             result.push(DatasetItem {name: option_osstr_to_string(file.file_name()), item_type: DatasetItemType::UnknownFile});
         }
@@ -94,5 +92,9 @@ fn load_items_from_path(path: &PathBuf) -> Vec<DatasetItem> {
 }
 
 fn option_osstr_to_string(option_osstr: Option<&OsStr>) -> String {
-    option_osstr.unwrap().to_os_string().into_string().unwrap()
+    osstr_to_string(option_osstr.unwrap())
+}
+
+fn osstr_to_string(osstr: &OsStr) -> String {
+    osstr.to_os_string().into_string().unwrap()
 }

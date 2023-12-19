@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { Dataset, DatasetItem } from "../types/dataset";
+import { Dataset, DatasetItem, Image } from "../types/dataset";
 
 //https://runthatline.com/pinia-typescript-type-state-actions-getters/
 export const useDatasetStore = defineStore("dataset", {
@@ -11,6 +11,8 @@ export const useDatasetStore = defineStore("dataset", {
     getters: {
         datasetName: (state) => state.name,
         datasetPath: (state) => state.path,
-        datasetItems: (state): DatasetItem[] => state.items
+        datasetItems: (state): DatasetItem[] => state.items,
+        images: (state): Image[] => state.items.filter(item => item.itemType === "image") as Image[]
+        
     }
 });

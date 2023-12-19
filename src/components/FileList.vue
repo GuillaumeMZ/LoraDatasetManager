@@ -14,11 +14,9 @@
     const getDatasetItemStyles = (item: DatasetItem) => {
         switch(item.itemType) {
             case "directory": return { icon: "pi-folder", color: "orange" }
-            case "orphanedTags": return { icon: "pi-pencil", color: "red" }
-            case "parentedTags": return { icon: "pi-pencil", color: "green" }
-            case "taggedImage": return { icon: "pi-image", color: "green" }
             case "unknownFile": return { icon: "pi-file", color: "orange" }
-            case "untaggedImage": return { icon: "pi-image", color: "red" }
+            case "tags": return { icon: "pi-pencil", color: item.imageFileName === undefined ? "red" : "green" }
+            case "image": return { icon: "pi-image", color: item.tagFileName === undefined ? "red" : "green" }
         }
     }
 </script>
