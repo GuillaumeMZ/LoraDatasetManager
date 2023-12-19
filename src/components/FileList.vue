@@ -4,44 +4,27 @@
     import Listbox from "primevue/listbox";
 
     import { useDatasetStore } from "../stores/datasetStore";
-    import { DatasetItem } from "../types/dataset";
 
     const store = useDatasetStore();
 
     const selectedItem = ref(); //type is same as files[x]
     //TODO: watch selectedItem to change the displayed image if needed
 
-    //iconClass and iconColor could be refactored into one func
-    //+ they need to be renamed
-    //map
-    const iconClass = (item: DatasetItem): string => {
-        switch(item.itemType) {
-            case "directory": return 'pi-folder';
-            case "orphanedTags": return "pi-pencil";
-            case "parentedTags": return "pi-pencil";
-            case "taggedImage": return "pi-image";
-            case "unknownFile": return "pi-file";
-            case "untaggedImage": return "pi-image";
-        }
-    };
-
-    const iconColor = (item: DatasetItem): string => {
-        switch(item.itemType) {
-            case "directory": return 'orange';
-            case "orphanedTags": return "red";
-            case "parentedTags": return "green";
-            case "taggedImage": return "green";
-            case "unknownFile": return "orange";
-            case "untaggedImage": return "red";
-        }
-    };
+    const datasetItemStyles: { [id: string]: { icon: string, color: string } } = {
+        "directory": { icon: "pi-folder", color: "orange" },
+        "orphanedTags": { icon: "pi-pencil", color: "red" },
+        "parentedTags": { icon: "pi-pencil", color: "green" },
+        "taggedImage": { icon: "pi-image", color: "green" },
+        "unknownFile": { icon: "pi-file", color: "orange" },
+        "untaggedImage": { icon: "pi-image", color: "red" }
+    }
 </script>
 
 <template>
     <Listbox v-model="selectedItem" :options="store.datasetItems" optionLabel="name">
         <template #option="slotProps">
-            <i :class="['pi', iconClass(slotProps.option)]"></i>
-            <p :style="{ color: iconColor(slotProps.option) }">{{ slotProps.option.name }}</p>
+            <i :class="['pi', datasetItemStyles[slotProps.option.itemType].icon]"></i>
+            <p :style="{ color: datasetItemStyles[slotProps.option.itemType].color }">{{ slotProps.option.name }}</p>
         </template>
     </Listbox>
 </template>
