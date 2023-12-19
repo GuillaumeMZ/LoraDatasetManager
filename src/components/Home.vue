@@ -14,7 +14,7 @@
             directory: true,
             multiple: false,
             title: "Select a dataset"
-        });
+        }) as string; //since multiple is false
 
         if(selectedDatasetPath === null) {
             return;
