@@ -1,30 +1,33 @@
 <script setup lang="ts">
-    import { ref } from "vue";
+    import { Ref, ref } from "vue";
 
     import Listbox from "primevue/listbox";
 
     import { useDatasetStore } from "../stores/datasetStore";
+    import { DatasetItem } from "../types/dataset";
 
     const store = useDatasetStore();
 
-    const selectedItem = ref(); //type is same as files[x]
+    const selectedItem: Ref<DatasetItem | undefined> = ref();
     //TODO: watch selectedItem to change the displayed image if needed
 
-    const datasetItemStyles: { [id: string]: { icon: string, color: string } } = {
-        "directory": { icon: "pi-folder", color: "orange" },
-        "orphanedTags": { icon: "pi-pencil", color: "red" },
-        "parentedTags": { icon: "pi-pencil", color: "green" },
-        "taggedImage": { icon: "pi-image", color: "green" },
-        "unknownFile": { icon: "pi-file", color: "orange" },
-        "untaggedImage": { icon: "pi-image", color: "red" }
+    const getDatasetItemStyles = (item: DatasetItem) => {
+        switch(item.itemType) {
+            case "directory": return { icon: "pi-folder", color: "orange" }
+            case "orphanedTags": return { icon: "pi-pencil", color: "red" }
+            case "parentedTags": return { icon: "pi-pencil", color: "green" }
+            case "taggedImage": return { icon: "pi-image", color: "green" }
+            case "unknownFile": return { icon: "pi-file", color: "orange" }
+            case "untaggedImage": return { icon: "pi-image", color: "red" }
+        }
     }
 </script>
 
 <template>
     <Listbox v-model="selectedItem" :options="store.datasetItems" optionLabel="name">
         <template #option="slotProps">
-            <i :class="['pi', datasetItemStyles[slotProps.option.itemType].icon]"></i>
-            <p :style="{ color: datasetItemStyles[slotProps.option.itemType].color }">{{ slotProps.option.name }}</p>
+            <i :class="['pi', getDatasetItemStyles(slotProps.option).icon]"></i>
+            <p :style="{ color: getDatasetItemStyles(slotProps.option).color }">{{ slotProps.option.name }}</p>
         </template>
     </Listbox>
 </template>
