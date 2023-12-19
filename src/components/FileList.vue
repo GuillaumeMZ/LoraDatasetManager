@@ -13,6 +13,7 @@
 
     //iconClass and iconColor could be refactored into one func
     //+ they need to be renamed
+    //map
     const iconClass = (item: DatasetItem): string => {
         switch(item.itemType) {
             case "directory": return 'pi-folder';
@@ -55,9 +56,5 @@
         align-items: center;
         row-gap: 10px;
         column-gap: 10px;
-    }
-
-    .p-listbox-item p {
-        color: red;
     }
 </style>
