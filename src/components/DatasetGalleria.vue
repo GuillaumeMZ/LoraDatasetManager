@@ -41,6 +41,7 @@
     .p-galleria-item-container {
         width: 100%;
         height: 100%;
+        align-items: center;
     }
 
     .p-galleria-item {
@@ -64,7 +65,7 @@
     }
 
     .p-galleria-item-nav {
-        z-index: 2;
+        position: static;
     }
 
     .p-galleria-thumbnail-wrapper {
