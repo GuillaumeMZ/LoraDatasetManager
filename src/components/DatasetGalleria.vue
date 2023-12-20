@@ -1,14 +1,35 @@
 <script setup lang="ts">
-    import { Ref, ref } from "vue";
+    import { computed, Ref, ref } from "vue";
 
     import Image from "primevue/image";
     import Textarea from "primevue/textarea";
     import Galleria from "primevue/galleria";
 
-    const activeIndex: Ref<number> = ref(0);
+    import { useDatasetStore } from "../stores/datasetStore";
+    import { Tags } from "../types/dataset";
 
+    const store = useDatasetStore();
+    
+    const activeIndex: Ref<number> = ref(0);
+        
     const props = defineProps(["images"]);
-    const text = ref();
+    const tags = computed({
+        //TODO: clean
+        get() {
+            const currentImage = store.images[activeIndex.value];
+            const tagsItem = store.items.find(item => item.itemType === "tags" && item.imageFileName !== undefined && item.imageFileName === currentImage.name) as Tags | undefined;
+            
+            return tagsItem?.tags;
+        },
+        set(newTags) {
+            const currentImage = store.images[activeIndex.value];
+            const tagsItem = store.items.find(item => item.itemType === "tags" && item.imageFileName !== undefined && item.imageFileName === currentImage.name) as Tags | undefined;
+        
+            if(tagsItem !== undefined && newTags !== undefined) {
+                tagsItem.tags = newTags;
+            }
+        }
+    });
 </script>
 
 <template>
@@ -16,7 +37,7 @@
         <template #item="slotProps">
             <Image :src="slotProps.item.itemImageSrc" :alt="slotProps.item.alt" preview />
             <div id="tags">
-                <Textarea v-if="slotProps.item.tagFileName !== undefined" v-model="text" />
+                <Textarea v-if="slotProps.item.tagFileName !== undefined" v-model="tags" />
                 <p v-else>This image is not tagged... yet.</p>
             </div>
         </template>

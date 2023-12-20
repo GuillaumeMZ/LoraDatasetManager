@@ -13,6 +13,5 @@ export const useDatasetStore = defineStore("dataset", {
         datasetPath: (state) => state.path,
         datasetItems: (state): DatasetItem[] => state.items,
         images: (state): Image[] => state.items.filter(item => item.itemType === "image") as Image[]
-        
     }
 });

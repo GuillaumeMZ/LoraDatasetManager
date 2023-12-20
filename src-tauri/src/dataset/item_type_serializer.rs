@@ -31,7 +31,7 @@ pub fn serialize_dataset_item_type<S: Serializer>(
 
             let mut s = serializer.serialize_struct("DatasetItemType", len)?;
             s.serialize_field("itemType", "tags")?;
-            s.serialize_field("tags", &taglist.tags.join(","))?;
+            s.serialize_field("tags", &taglist.tags.join(", "))?;
 
             if image_file_name.is_some() {
                 s.serialize_field("imageFileName", image_file_name)?;
