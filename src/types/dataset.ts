@@ -31,6 +31,6 @@ export type Image = {
 export type Tags = { 
     name: string,
     itemType: "tags",
-    tags: string[],
+    tags: string,
     imageFileName?: string
 };

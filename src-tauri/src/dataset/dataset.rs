@@ -68,7 +68,7 @@ fn load_items_from_path(path: &PathBuf) -> Vec<DatasetItem> {
 
         if image_tags_file.exists() {
             result.push(DatasetItem {name: option_osstr_to_string(image_file.file_name()), item_type: DatasetItemType::Image(image_file.clone(), image_tags_file.file_name().map(osstr_to_string))});
-            result.push(DatasetItem {name: option_osstr_to_string(image_tags_file.file_name()), item_type: DatasetItemType::Tags(Taglist::new(), image_file.file_name().map(osstr_to_string))}); //TODO: fill the tags
+            result.push(DatasetItem {name: option_osstr_to_string(image_tags_file.file_name()), item_type: DatasetItemType::Tags(Taglist::from_file(&image_tags_file), image_file.file_name().map(osstr_to_string))});
             known_files.insert(image_tags_file.clone());
         } else {
             result.push(DatasetItem {name: option_osstr_to_string(image_file.file_name()), item_type: DatasetItemType::Image(image_file.clone(), None)});
@@ -82,7 +82,7 @@ fn load_items_from_path(path: &PathBuf) -> Vec<DatasetItem> {
         if file.is_dir() {
             result.push(DatasetItem {name: option_osstr_to_string(file.file_name()), item_type: DatasetItemType::Directory});
         } else if file.extension().is_some() && option_osstr_to_string(file.extension()) == "txt" {
-            result.push(DatasetItem {name: option_osstr_to_string(file.file_name()), item_type: DatasetItemType::Tags(Taglist::new(), None)}); //TODO: fill the tags
+            result.push(DatasetItem {name: option_osstr_to_string(file.file_name()), item_type: DatasetItemType::Tags(Taglist::from_file(file), None)});
         } else {
             result.push(DatasetItem {name: option_osstr_to_string(file.file_name()), item_type: DatasetItemType::UnknownFile});
         }

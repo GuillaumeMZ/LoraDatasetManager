@@ -1,3 +1,5 @@
+use std::{fs::File, io::Read};
+use std::path::Path;
 use std::vec::Vec;
 
 use serde::{Serialize, Deserialize};
@@ -25,5 +27,14 @@ impl Taglist {
                     .map(str::to_string)
                     .collect()
         }
+    }
+
+    pub fn from_file(path: &Path) -> Self {
+        let mut file_contents = String::new();
+        File::open(path).unwrap()
+                        .read_to_string(&mut file_contents)
+                        .unwrap();
+        
+        Taglist::from_string(&file_contents)
     }
 }
