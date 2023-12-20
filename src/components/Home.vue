@@ -5,7 +5,7 @@
 
     import { useDatasetStore } from "../stores/datasetStore";
     import router from "../router";
-    import { Dataset } from "../types/dataset";    
+    import { Dataset } from "../types/dataset";
 
     const store = useDatasetStore();
 
@@ -23,7 +23,7 @@
         // this should be refactored into a separated function when other dataset opening methods will be added
         const dataset: Dataset = await invoke('load_dataset', { datasetPath: selectedDatasetPath });
         store.$state = dataset;
-        
+
         router.push("/datasetEditor");
     };
 </script>

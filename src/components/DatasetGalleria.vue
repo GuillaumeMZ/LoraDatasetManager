@@ -47,30 +47,30 @@
     </Galleria>
 </template>
 
-<style>
+<style scoped>
     /* TODO: clean css */
     .p-galleria {
         width: 100%;
         height: 100%;
     }
 
-    .p-galleria-content {
+    .p-galleria :deep(.p-galleria-content) {
         width: 100%;
         height: 100%;
     }
 
-    .p-galleria-item-wrapper {
+    .p-galleria :deep(.p-galleria-item-wrapper) {
         width: 100%;
         flex-grow: 1;
     }
 
-    .p-galleria-item-container {
+    .p-galleria :deep(.p-galleria-item-container) {
         width: 100%;
         height: 100%;
         align-items: center;
     }
 
-    .p-galleria-item {
+    .p-galleria :deep(.p-galleria-item) {
         width: 100%;
         height: 100%;
     }
@@ -81,7 +81,7 @@
         position: relative;
     }
 
-    img {
+    .p-image :deep(img) {
         position: absolute;
         width: 100%;
         height: 100%;
@@ -90,28 +90,24 @@
         object-fit: contain;
     }
 
-    .p-galleria-item-nav {
+    .p-galleria :deep(.p-galleria-item-nav) {
         position: static;
     }
 
-    .p-galleria-thumbnail-wrapper {
+    .p-galleria :deep(.p-galleria-thumbnail-wrapper) {
         width: 100%;
         height: 100px;
     }
 
-    .p-galleria-thumbnail-container {
+    .p-galleria :deep(.p-galleria-thumbnail-container) {
         width: 100%;
         height: 100%;
     }
 
-    .p-galleria-thumbnail-item-content {
+    .p-galleria :deep(.p-galleria-thumbnail-item-content) {
         width: 140px;
         height: 100px;
         position: relative;
-    }
-
-    .p-image-action {
-        z-index: 1;
     }
 
     #tags {
@@ -127,10 +123,10 @@
         height: 100%;    
         border-radius: 0;
         resize: none;
+        padding: 10px;
     }
 
     p {
         text-align: center;
     }
-
 </style>

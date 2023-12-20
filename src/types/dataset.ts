@@ -25,7 +25,7 @@ export type Image = {
     name: string,
     itemType: "image",
     path: string,
-    tagFileName ?: string
+    tagFileName?: string
 };
 
 export type Tags = { 

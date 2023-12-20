@@ -12,6 +12,15 @@
             label: "File",
             items: [
                 {
+                    label: "Save current image"
+                },
+                {
+                    label: "Save all opened images"
+                },
+                {
+                    separator: true
+                },
+                {
                     label: "Close Editor",
                     command: () => {
                         router.push("/");
@@ -37,7 +46,7 @@
     <Menubar :model="menuItems" />
 </template>
 
-<style>
+<style scoped>
     .p-menubar {
         border-radius: 0%;
     }

@@ -30,12 +30,13 @@
     </Listbox>
 </template>
 
-<style>
+<style scoped>
     .p-listbox {
         border: none;
+        padding: 0.5em;
     }
 
-    .p-listbox-item {
+    .p-listbox :deep(.p-listbox-item) {
         display: flex;
         align-items: center;
         row-gap: 10px;
