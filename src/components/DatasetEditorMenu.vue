@@ -1,11 +1,16 @@
 <script setup lang="ts">
-    import { ref } from 'vue';
+    import { PropType, ref } from 'vue';
 
     import Menubar from 'primevue/menubar';
 
     import router from "../router";
 
-    const props = defineProps(["showSidepanel"]); //TODO: typing
+    const props = defineProps({
+        showSidepanel: {
+            type: Function as PropType<() => void>,
+            required: true
+        }
+    });
 
     const menuItems = ref([
         {
