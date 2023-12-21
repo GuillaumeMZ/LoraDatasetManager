@@ -81,7 +81,7 @@
         position: relative;
     }
 
-    .p-image :deep(img) {
+    .p-image :deep(img), img {
         position: absolute;
         width: 100%;
         height: 100%;
